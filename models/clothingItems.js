@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const clothingItemSchema = new mongoose({
+const clothingItemSchema = new mongoose.Schema({
   name: {
     type: String,
     minlength: 2,

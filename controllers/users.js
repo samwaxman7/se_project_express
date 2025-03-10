@@ -5,16 +5,16 @@ module.exports.getUsers = (req, res) => {
     .populate("user")
     .then((users) => res.send({ data: users }))
     .catch(() =>
-      res.status(500).send({ message: "Requested resource not found" })
+      res.status(404).send({ message: "Requested resource not found" })
     );
 };
 
 module.exports.getUser = (req, res) => {
-  User.findById(userId) // not sure how to do this
+  User.findById(req.paramas.id)
     .populate("user")
-    .then((users) => res.send({ data: users }))
+    .then((user) => res.send({ data: user }))
     .catch(() =>
-      res.status(500).send({ message: "Requested resource not found" })
+      res.status(404).send({ message: "Requested resource not found" })
     );
 };
 
@@ -23,5 +23,5 @@ module.exports.createUser = (req, res) => {
 
   User.create({ name, avatar })
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => res.status(404).send({ message: err.message }));
 };
