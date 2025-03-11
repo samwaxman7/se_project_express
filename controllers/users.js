@@ -1,27 +1,31 @@
+const clothingItems = require("../models/clothingItems");
 const User = require("../models/user");
+const { errorHandler } = require("../utils/errors");
 
-module.exports.getUsers = (req, res) => {
+getUsers = (req, res) => {
   User.find({})
-    .populate("user")
-    .then((users) => res.send({ data: users }))
-    .catch(() =>
-      res.status(404).send({ message: "Requested resource not found" })
-    );
+    .then((users) => res.send(users))
+    .catch((err) => {
+      errorHandler(req, res, err);
+    });
 };
 
-module.exports.getUser = (req, res) => {
-  User.findById(req.paramas.id)
-    .populate("user")
-    .then((user) => res.send({ data: user }))
-    .catch(() =>
-      res.status(404).send({ message: "Requested resource not found" })
-    );
+getUser = (req, res) => {
+  User.findById(req.params.userId)
+    .orFail()
+    .then((user) => res.send(user))
+    .catch((err) => {
+      errorHandler(req, res, err);
+    });
 };
 
-module.exports.createUser = (req, res) => {
+createUser = (req, res) => {
   const { name, avatar } = req.body;
-
   User.create({ name, avatar })
-    .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(404).send({ message: err.message }));
+    .then((user) => res.status(201).send(user))
+    .catch((err) => {
+      errorHandler(req, res, err);
+    });
 };
+
+module.exports = { getUsers, getUser, createUser };

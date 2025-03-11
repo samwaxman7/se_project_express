@@ -1,28 +1,57 @@
 const ClothingItem = require("../models/clothingItems");
+const { errorHandler } = require("../utils/errors");
 
-module.exports.getItems = (req, res) => {
+getItems = (req, res) => {
   ClothingItem.find({})
-    .populate("items")
-    .then((items) => res.send({ data: items }))
-    .catch(() =>
-      res.status(404).send({ message: "Requested resource not found" })
-    );
+    .then((items) => res.status(200).send(items))
+    .catch((err) => {
+      errorHandler(req, res, err);
+    });
 };
 
-module.exports.createItem = (req, res) => {
-  const { name, weather, imageUrl, ownerId } = req.body;
+createItem = (req, res) => {
+  const { name, weather, imageUrl } = req.body;
 
-  ClothingItem.create({ name, weather, imageUrl, owner: ownerId })
-    .then((item) => res.send({ data: item }))
-    .catch(() =>
-      res.status(404).send({ message: "Requested resource not found" })
-    );
+  ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
+    .then((item) => res.status(201).send(item))
+    .catch((err) => {
+      errorHandler(req, res, err);
+    });
 };
 
-module.exports.deleteItem = (req, res) => {
-  ClothingItem.findByIdAndRemove(req.params.id)
-    .then((item) => res.send({ data: item }))
-    .catch(() =>
-      res.status(404).send({ message: "Requested resource not found" })
-    );
+deleteItem = (req, res) => {
+  ClothingItem.findByIdAndDelete(req.params.itemId)
+    .orFail()
+    .then((item) => res.send(item))
+    .catch((err) => {
+      errorHandler(req, res, err);
+    });
 };
+
+likeItem = (req, res) => {
+  ClothingItem.findByIdAndUpdate(
+    req.params.itemId,
+    { $addToSet: { likes: req.user._id } }, // add _id to the array if it's not there yet
+    { new: true }
+  )
+    .orFail()
+    .then((item) => res.send(item))
+    .catch((err) => {
+      errorHandler(req, res, err);
+    });
+};
+
+dislikeItem = (req, res) => {
+  ClothingItem.findByIdAndUpdate(
+    req.params.itemId,
+    { $pull: { likes: req.user._id } }, // remove _id to the array if it's not there yet
+    { new: true }
+  )
+    .orFail()
+    .then((item) => res.send(item))
+    .catch((err) => {
+      errorHandler(req, res, err);
+    });
+};
+
+module.exports = { getItems, createItem, deleteItem, likeItem, dislikeItem };
