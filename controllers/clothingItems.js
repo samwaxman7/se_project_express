@@ -3,7 +3,7 @@ const { errorHandler } = require("../utils/errors");
 
 const getItems = (req, res) => {
   ClothingItem.find({})
-    .then((items) => res.status(200).send(items))
+    .then((items) => res.send(items))
     .catch((err) => {
       errorHandler(req, res, err);
     });
