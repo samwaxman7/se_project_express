@@ -1,8 +1,7 @@
-const clothingItems = require("../models/clothingItems");
 const User = require("../models/user");
 const { errorHandler } = require("../utils/errors");
 
-getUsers = (req, res) => {
+const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
     .catch((err) => {
@@ -10,7 +9,7 @@ getUsers = (req, res) => {
     });
 };
 
-getUser = (req, res) => {
+const getUser = (req, res) => {
   User.findById(req.params.userId)
     .orFail()
     .then((user) => res.send(user))
@@ -19,7 +18,7 @@ getUser = (req, res) => {
     });
 };
 
-createUser = (req, res) => {
+const createUser = (req, res) => {
   const { name, avatar } = req.body;
   User.create({ name, avatar })
     .then((user) => res.status(201).send(user))

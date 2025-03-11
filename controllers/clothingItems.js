@@ -1,7 +1,7 @@
 const ClothingItem = require("../models/clothingItems");
 const { errorHandler } = require("../utils/errors");
 
-getItems = (req, res) => {
+const getItems = (req, res) => {
   ClothingItem.find({})
     .then((items) => res.status(200).send(items))
     .catch((err) => {
@@ -9,7 +9,7 @@ getItems = (req, res) => {
     });
 };
 
-createItem = (req, res) => {
+const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
 
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
@@ -19,7 +19,7 @@ createItem = (req, res) => {
     });
 };
 
-deleteItem = (req, res) => {
+const deleteItem = (req, res) => {
   ClothingItem.findByIdAndDelete(req.params.itemId)
     .orFail()
     .then((item) => res.send(item))
@@ -28,7 +28,7 @@ deleteItem = (req, res) => {
     });
 };
 
-likeItem = (req, res) => {
+const likeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $addToSet: { likes: req.user._id } }, // add _id to the array if it's not there yet
@@ -41,7 +41,7 @@ likeItem = (req, res) => {
     });
 };
 
-dislikeItem = (req, res) => {
+const dislikeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $pull: { likes: req.user._id } }, // remove _id to the array if it's not there yet
