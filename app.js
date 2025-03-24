@@ -16,10 +16,10 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.post("/signin", login);
-app.post("/signup", createUser);
-app.get("/items", getItems);
-app.use(auth);
+// app.post("/signin", login);
+// app.post("/signup", createUser);
+// app.get("/items", getItems);
+// app.use(auth);
 app.use("/", router);
 
 app.listen(PORT, () => {

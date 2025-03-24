@@ -6,7 +6,6 @@ const {
 } = require("./errorConstants");
 
 function errorHandler(req, res, err) {
-  console.error(err);
   if (err.name === "MongoServerError") {
     return res.status(DUPLICATE).send({ message: err.message });
   }

@@ -1,5 +1,6 @@
 const ClothingItem = require("../models/clothingItems");
 const { errorHandler } = require("../utils/errors");
+const { FORBIDDEN } = require("../utils/errorConstants");
 
 const getItems = (req, res) => {
   ClothingItem.find({})
@@ -20,13 +21,17 @@ const createItem = (req, res) => {
 };
 
 const deleteItem = (req, res) => {
-  ClothingItem.findByIdAndDelete(req.params.itemId)
+  ClothingItem.findById(req.params.itemId)
     .orFail()
     .then((item) => {
-      if (req.params.itemId === req.user._id) {
-        //dunno if I added this correctly
-        res.send(item);
+      if (String(item.owner) !== req.user._id) {
+        return res
+          .status(FORBIDDEN)
+          .send({ message: "Can't delete other user's items" });
       }
+      return item
+        .deleteOne()
+        .then(() => res.status(200).send({ message: "Successfully deleted" }));
     })
     .catch((err) => {
       errorHandler(req, res, err);
@@ -49,7 +54,7 @@ const likeItem = (req, res) => {
 const dislikeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
-    { $pull: { likes: req.user._id } }, // remove _id to the array if it's not there yet
+    { $pull: { likes: req.user._id } },
     { new: true }
   )
     .orFail()
