@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const { JWT_SECRET } = require("../utils/config");
 const { errorHandler } = require("../utils/errors");
+const { BAD_REQUEST, UNAUTHORIZED } = require("../utils/errorConstants");
 
 const getCurrentUser = (req, res) => {
   User.findById(req.user._id)
@@ -44,6 +45,11 @@ const createUser = (req, res) => {
 
 const login = (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password) {
+    return res
+      .status(BAD_REQUEST)
+      .send({ message: "The password and email fields are required" });
+  }
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
@@ -52,7 +58,10 @@ const login = (req, res) => {
       res.send({ token });
     })
     .catch((err) => {
-      errorHandler(req, res, err);
+      if (err.message === "Incorrect email or password") {
+        return res.status(UNAUTHORIZED).send({ message: err.message });
+      }
+      return errorHandler(req, res, err);
     });
 };
 

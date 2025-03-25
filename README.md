@@ -1,6 +1,6 @@
 # WTWR (What to Wear?): Back End
 
-This back-end project is focused on creating a server for the WTWR application using express. Schema models and controllers have been used by connecting them with routes to set up API functionality.
+This back-end project is focused on creating a server for the WTWR application using express. Schema models and controllers have been used by connecting them with routes to set up API functionality. I've now added user identification, authorization and authentication using jsonwebtoken and bcrypt.
 
 ## Running the Project
 
@@ -22,6 +22,14 @@ This back-end project is focused on creating a server for the WTWR application u
 
 - Error Handling
   ![Error handling function](./demo/error_handle.png)
+
+- User creation
+  ![bcrypt password hash](./demo/bcrypt.png)
+
+- User login
+  ![jsonwebtoken authorization](./demo/jsonwebtoken.png)
+  ![authorization middleware](./demo/authorization.png)
+  ![bcrypt authentication](./demo//authentication.png)
 
 **GITHUB PAGE**
 
