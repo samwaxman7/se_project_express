@@ -15,10 +15,10 @@ const getCurrentUser = (req, res) => {
 };
 
 const patchCurrentUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { name, avatarUrl } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
-    { name, avatar },
+    { name, avatarUrl },
     { new: true, runValidators: true }
   )
     .orFail()
@@ -29,10 +29,10 @@ const patchCurrentUser = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, avatar, email } = req.body;
+  const { name, avatarUrl, email } = req.body;
   bcrypt
     .hash(req.body.password, 10)
-    .then((hash) => User.create({ name, avatar, email, password: hash }))
+    .then((hash) => User.create({ name, avatarUrl, email, password: hash }))
     .then((user) => {
       const U = user.toObject();
       delete U.password;
